@@ -1,3 +1,4 @@
+use flate2::{Compression, write::GzEncoder};
 use reqwest::{Url, header::ACCEPT};
 use std::{
     fs,
@@ -18,7 +19,7 @@ struct File {
 }
 #[derive(Debug)]
 pub struct Directory {
-    _name: String,
+    name: String,
     path: PathBuf,
     files: Vec<File>,
     dirs: Vec<Directory>,
@@ -29,7 +30,7 @@ pub struct Directory {
 impl Directory {
     pub fn new(name: String, path: PathBuf, url: Url) -> Self {
         Directory { 
-            _name: name, 
+            name, 
             path, 
             url,
             files: vec![], 
@@ -107,5 +108,12 @@ impl Directory {
         };
         println!("Directories downloaded");
 
+    }
+
+    pub async fn create_zip(&self) {
+        let tar_gz = fs::File::create(&self.path).unwrap();
+        let enc = GzEncoder::new(tar_gz, Compression::default());
+        let mut tar = tar::Builder::new(enc);
+        tar.append_dir_all(&self.name, &self.path).unwrap();
     }
 }

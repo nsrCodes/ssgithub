@@ -17,8 +17,12 @@ fn get_file_as_byte_vec(path: &PathBuf) -> Vec<u8> {
 
 pub async fn api_handler(p: FullPath) -> Result<impl warp::Reply, warp::Rejection> {
     let request_data = RequestMetaData::new(&p);
-    let gh_resp = GithubData::new(request_data).await;
-    gh_resp.download_and_zip().await;
+    let (gh_resp, mut result_dir) = GithubData::new(request_data);
+    // gh_resp.download_and_zip().await;
+
+    result_dir.update_from_github_api().await;
+    result_dir.download_from_github().await;
+    result_dir.create_zip().await;
 
     let mut res = Response::new(get_file_as_byte_vec(&gh_resp.res_path).into());
     res.headers_mut()

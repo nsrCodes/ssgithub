@@ -38,13 +38,13 @@ fn generate_uuid() -> String {
 pub struct GithubData {
     pub id: String,
     pub path: PathBuf,
-    pub result: Directory,
+    // pub result: Directory,
     pub res_path: PathBuf,
 }
 
 impl GithubData {
     //  pub async fn new(response: &Vec<ResponseObject>) -> Self {
-    pub async fn new(request: RequestMetaData) -> Self {
+    pub fn new(request: RequestMetaData) -> (Self, Directory) {
         let uuid = generate_uuid();
         let mut work_path = Path::new(".").join("tmp");
         work_path.push(&uuid);
@@ -56,30 +56,31 @@ impl GithubData {
 
         let path = work_path.join(&name);
 
-        let mut result_dir = Directory::new(name.to_string(), path, request.api_target());
-        result_dir.update_from_github_api().await;
+        let result_dir = Directory::new(name.to_string(), path, request.api_target());
+        // result_dir.update_from_github_api().await;
         println!("Updated from github for top level result directory");
-        GithubData {
+        (GithubData {
             path: work_path,
             res_path: Path::new(".").join("tmp").join(format!("{}.tar.gz",&uuid)),
             id: uuid,
-            result: result_dir
-        }
+            // result: result_dir
+        }, result_dir)
     }
 
-    // fn download() -> Result<std::path::Path, >
-    pub async fn download_and_zip(&self) {
-        println!("Starting download");
-        self.result.download_from_github().await;
-        println!("Download complete");
+    // // fn download() -> Result<std::path::Path, >
+    // pub async fn download_and_zip(&self) {
+    //     self.result.update_from_github_api().await;
+    //     println!("Starting download");
+    //     self.result.download_from_github().await;
+    //     println!("Download complete");
         
-        println!("Starting zip at position: {:?}", self.res_path);
-        let tar_gz = fs::File::create(&self.res_path).unwrap();
-        let enc = GzEncoder::new(tar_gz, Compression::default());
-        let mut tar = tar::Builder::new(enc);
-        tar.append_dir_all(&self.id, &self.path).unwrap();
-        println!("Zip complete");
-    }
+    //     println!("Starting zip at position: {:?}", self.res_path);
+    //     let tar_gz = fs::File::create(&self.res_path).unwrap();
+    //     let enc = GzEncoder::new(tar_gz, Compression::default());
+    //     let mut tar = tar::Builder::new(enc);
+    //     tar.append_dir_all(&self.id, &self.path).unwrap();
+    //     println!("Zip complete");
+    // }
 }
 
 #[cfg(test)]
