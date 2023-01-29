@@ -110,8 +110,8 @@ impl Directory {
 
     }
 
-    pub async fn create_zip(&self) {
-        let tar_gz = fs::File::create(&self.path).unwrap();
+    pub async fn create_zip(&self, final_path: &PathBuf) {
+        let tar_gz = fs::File::create(final_path).unwrap();
         let enc = GzEncoder::new(tar_gz, Compression::default());
         let mut tar = tar::Builder::new(enc);
         tar.append_dir_all(&self.name, &self.path).unwrap();

@@ -22,7 +22,7 @@ pub async fn api_handler(p: FullPath) -> Result<impl warp::Reply, warp::Rejectio
 
     result_dir.update_from_github_api().await;
     result_dir.download_from_github().await;
-    result_dir.create_zip().await;
+    result_dir.create_zip(&gh_resp.res_path).await;
 
     let mut res = Response::new(get_file_as_byte_vec(&gh_resp.res_path).into());
     res.headers_mut()
