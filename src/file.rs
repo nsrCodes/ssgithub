@@ -21,7 +21,6 @@ pub fn get_file_as_byte_vec(path: &PathBuf) -> Vec<u8> {
 }
 
 pub async fn get_file_from_github(file: &File) {
-    println!("Downloading file from: {:?}", file.url.as_str());
     let client = reqwest::Client::new();
     match client.get(file.url.as_str())
             .header(ACCEPT, "application/vnd.github.v3.raw")

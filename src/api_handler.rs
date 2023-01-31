@@ -17,7 +17,9 @@ pub async fn api_handler(p: FullPath) -> Result<impl warp::Reply, warp::Rejectio
     result_dir.create_zip(&gh_resp.res_path).await;
 
     let mut res = Response::new(get_file_as_byte_vec(&gh_resp.res_path).into());
+    println!("gh: {:#?}", &gh_resp);
+    tokio::spawn(gh_resp.clean());
     res.headers_mut()
-        .insert(CONTENT_TYPE, HeaderValue::from_static("application/gzip"));
+        .insert(CONTENT_TYPE, HeaderValue::from_static("application/tar+gzip"));
     return Ok(res);
 }

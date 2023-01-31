@@ -70,9 +70,6 @@ impl Directory {
             .map(get_file_from_github)
             .collect::<std::vec::Vec<_>>();
 
-        println!("Files downloaded");
-        println!("Downloading directories");
-
         let dir_futures = self.dirs.iter()
             .map(|dir| async {
                 dir.download_from_github().await;
@@ -83,7 +80,6 @@ impl Directory {
             join_all(file_futures),
             join_all(dir_futures),
         );
-        println!("Directories downloaded");
     }
 
     pub async fn create_zip(&self, final_path: &PathBuf) {

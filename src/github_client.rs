@@ -1,4 +1,5 @@
 use reqwest::{header::USER_AGENT, Url};
+use tokio::{fs, join};
 use uuid::Uuid;
 use std::path::{Path, PathBuf};
 use serde::Deserialize;
@@ -54,13 +55,19 @@ impl GithubData {
         let path = work_path.join(&name);
 
         let result_dir = Directory::new(name.to_string(), path, request.api_target());
-        println!("Updated from github for top level result directory");
         (GithubData {
             path: work_path,
             res_path: Path::new(".").join("tmp").join(format!("{}.tar.gz",&uuid)),
             id: uuid,
-            // result: result_dir
         }, result_dir)
+    }
+
+    pub async fn clean(self) {
+        let _results = join!(
+            fs::remove_dir_all(&self.path),
+            fs::remove_file(&self.res_path)
+        );
+        println!("resses: {:#?}", _results);
     }
 }
 
