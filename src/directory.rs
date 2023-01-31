@@ -7,16 +7,9 @@ use std::{
 };
 use async_recursion::async_recursion;
 
-use crate::github_client::{get_from_github_api, get_file_from_github};
+use crate::{github_client::get_from_github_api, file::{File, get_file_from_github}};
 
-#[derive(Debug)]
-pub struct File {
-    _name: String,
-    pub path: PathBuf,
-    pub url: Url,
-    _hash: String,
-    _size: u32,
-}
+
 #[derive(Debug)]
 pub struct Directory {
     name: String,
@@ -45,9 +38,9 @@ impl Directory {
 
             if content.r#type == "file" {   
                 let file = File {
-                    _name: name,
-                    _hash: content.sha,
-                    _size: content.size,
+                    name,
+                    hash: content.sha,
+                    size: content.size,
                     url: Url::parse(&content.url.as_str()).unwrap(),
                     path,
                 };
