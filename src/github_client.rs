@@ -71,27 +71,7 @@ mod github_client_tests {
     #[test]
     fn deserielize_github_response() {
         // todo
-        // define the prototype of this function
         // give the function an example github response
         // compare it with the expected response struct object
-    }
-
-    #[test]
-    fn test_download_single_file() {
-        // todo
-        // create dummy object for one single file (no directories)
-        // call download
-        // check if a result folder was created
-        // verifu the contents of the result folder
-    }
-
-    #[test]
-    fn test_download_nested_directory() {
-        // todo
-        // create dummy object for nested files and directories)
-        // call download
-        // check if a result folder was created
-        // verify the contents of the result folder,
-        // Should match hierarchy of the dummy nested structures
     }
 }

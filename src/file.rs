@@ -27,7 +27,7 @@ pub async fn get_file_from_github(file: &File) {
             .header(ACCEPT, "application/vnd.github.v3.raw")
             .send()
             .await {
-        Ok(response) => { // todo: convert to use tokio File and futures io
+        Ok(response) => {
             let mut file = fs::File::create(&file.path).unwrap();
             let mut content =  io::Cursor::new(response.bytes().await.unwrap());
             io::copy(&mut content, &mut file).unwrap();
