@@ -9,12 +9,13 @@ pub struct RequestMetaData {
     pub branch: String,
 }
 impl RequestMetaData {
-    fn validate_path(raw_path: &FullPath) {
+    fn is_valid_path(raw_path: &FullPath) -> bool{
         // expects "/{username}/{repo}/tree/{branch}/{path....}"
         
         let raw_path_vec: Vec<&str> = raw_path.as_str().split("/").collect();
         if raw_path_vec.is_empty() {
-            panic!("Empty path recieved")
+            // println!("Empty path recieved");
+            return false
         }
         let mut path_vec: Vec<&str> = raw_path.as_str().split("/").collect();
 
@@ -23,28 +24,34 @@ impl RequestMetaData {
         }
 
         if path_vec.len() < 4 {
-            panic!("Path length too small")
+            // println!("Path length too small: {:#?}", path_vec);
+            return false
         }
 
         if !path_vec.contains(&"tree") {
-            panic!("Path seems invalid, does not contains `tree` as subpath")
+            // println!("Path seems invalid, does not contains `tree` as subpath");
+            return false
         }
+        true
     }
 
-    pub fn new(raw_path: &FullPath) -> Self {
-        Self::validate_path(raw_path); // will panic if invalid path
-        let mut path_vec: Vec<&str> = raw_path.as_str().split("/").collect();
+    pub fn new(raw_path: &FullPath) -> Option<Self> {
+        if Self::is_valid_path(raw_path) {
 
-        if path_vec[0].is_empty() {
-            path_vec.remove(0);
-        }
-
-        RequestMetaData {
-            username: String::from(path_vec[0]),
-            repo: String::from(path_vec[1]),
-            branch: String::from(path_vec[3]),
-            path: path_vec[4..].to_vec().join("/"),
-        }
+            let mut path_vec: Vec<&str> = raw_path.as_str().split("/").collect();
+            
+            if path_vec[0].is_empty() {
+                path_vec.remove(0);
+            }
+            
+            return Some(RequestMetaData {
+                username: String::from(path_vec[0]),
+                repo: String::from(path_vec[1]),
+                branch: String::from(path_vec[3]),
+                path: path_vec[4..].to_vec().join("/"),
+            })
+        };
+        None
     }
     pub fn api_target(&self) -> Url {
         let mut url_str = format!(
@@ -78,7 +85,8 @@ mod path_parser_tests {
             .path("/spur-dev/spur/tree/master/src")
             .filter(&full_path_filter)
             .await
-            .unwrap();
+            .unwrap()
+            .expect("Should match, hence expects to build properly");
 
         let expected_res_1 = RequestMetaData {
             username: String::from("spur-dev"),

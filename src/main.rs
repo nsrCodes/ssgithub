@@ -11,7 +11,7 @@ use warp::Filter;
 async fn main() {
     let api = warp::any().and(warp::path::full()).and_then(api_handler);
 
-    let welcome = warp::path::end().map(|| format!("Welcome to my api"));
+    let welcome = warp::path::end().map(|| format!("Home page is currently under construction....🛠️"));
 
     let routes = welcome.or(api);
     warp::serve(routes).run(([127, 0, 0, 1], 3000)).await;
