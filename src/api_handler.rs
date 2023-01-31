@@ -1,4 +1,3 @@
-// use std::path::{Path, self};
 use std::{fs, path::PathBuf};
 use std::io::Read;
 
@@ -18,7 +17,6 @@ fn get_file_as_byte_vec(path: &PathBuf) -> Vec<u8> {
 pub async fn api_handler(p: FullPath) -> Result<impl warp::Reply, warp::Rejection> {
     let request_data = RequestMetaData::new(&p);
     let (gh_resp, mut result_dir) = GithubData::new(request_data);
-    // gh_resp.download_and_zip().await;
 
     result_dir.update_from_github_api().await;
     result_dir.download_from_github().await;

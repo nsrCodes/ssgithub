@@ -1,10 +1,9 @@
-use flate2::{Compression, write::GzEncoder};
-use reqwest::{header::USER_AGENT, Url};
+use reqwest::{header::{USER_AGENT, ACCEPT}, Url};
 use uuid::Uuid;
-use std::{path::{Path, PathBuf}, fs};
+use std::{path::{Path, PathBuf}, fs, io};
 use serde::Deserialize;
 
-use crate::{path_parser::RequestMetaData, directory::Directory};
+use crate::{path_parser::RequestMetaData, directory::{Directory, File}};
 
 #[derive(Debug, Deserialize)]
 pub struct ResponseObject {
@@ -29,6 +28,24 @@ pub async fn get_from_github_api(valid_url: &Url) -> Vec<ResponseObject>{
         .json::<Vec<ResponseObject> >()
         .await
         .unwrap()
+}
+
+pub async fn get_file_from_github(file: &File) {
+    println!("Downloading file from: {:?}", file.url.as_str());
+    let client = reqwest::Client::new();
+    match client.get(file.url.as_str())
+            .header(ACCEPT, "application/vnd.github.v3.raw")
+            .send()
+            .await {
+        Ok(response) => {
+            let mut file = fs::File::create(&file.path).unwrap();
+            let mut content =  io::Cursor::new(response.bytes().await.unwrap());
+            io::copy(&mut content, &mut file).unwrap();
+        },
+        Err(e) => {
+            println!("Couldn't download because of {:?}", e);
+        }
+    }
 }
 
 fn generate_uuid() -> String {
