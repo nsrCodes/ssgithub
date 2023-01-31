@@ -19,7 +19,6 @@ pub struct ResponseObject {
 
 /* todo: add tests for utilities */ 
 pub async fn get_from_github_api(valid_url: &Url) -> Vec<ResponseObject>{
-    println!("Getting from github api: {:?}", valid_url.as_str());
     let client = reqwest::Client::new();
     client.get(valid_url.as_str()) // hacky but works for now
         .header(USER_AGENT, "nsrcodes")
@@ -63,11 +62,10 @@ impl GithubData {
     }
 
     pub async fn clean(self) {
-        let _results = join!(
+        let _ = join!(
             fs::remove_dir_all(&self.path),
             fs::remove_file(&self.res_path)
         );
-        println!("resses: {:#?}", _results);
     }
 }
 
