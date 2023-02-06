@@ -1,0 +1,18 @@
+version: '3'
+services:
+  proxy:
+    build:
+      dockerfile: nginx-dockerfile
+      context: .
+    ports:
+        - 8080:80
+    restart: always
+    depends_on: 
+            - app
+  app:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+        - 8888:8888

@@ -14,6 +14,6 @@ async fn main() {
     let welcome = warp::path::end().map(|| format!("Home page is currently under construction....🛠️"));
 
     let routes = welcome.or(api);
-    println!("starting server on port 3000");
-    warp::serve(routes).run(([127, 0, 0, 1], 3000)).await;
+    println!("starting server on port 8888");
+    warp::serve(routes).run(([0, 0, 0, 0], 8888)).await;
 }

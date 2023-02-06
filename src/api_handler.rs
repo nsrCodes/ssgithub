@@ -23,7 +23,7 @@ pub async fn api_handler(p: FullPath) -> Result<impl warp::Reply, warp::Rejectio
         
             let mut res = Response::new(get_file_as_byte_vec(&gh_resp.res_path).into());
             res.headers_mut()
-                .insert(CONTENT_TYPE, HeaderValue::from_static("application/tar+gzip"));
+                .insert(CONTENT_TYPE, HeaderValue::from_static("application/tar"));
             
             println!("processed: {}", p.as_str());
             tokio::spawn(gh_resp.clean());

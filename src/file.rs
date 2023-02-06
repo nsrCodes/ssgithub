@@ -1,7 +1,7 @@
 use std::{fs, path::PathBuf};
 use std::io::{Read, self};
 use reqwest::Url;
-use reqwest::header::ACCEPT;
+use reqwest::header::{ACCEPT, USER_AGENT};
 
 #[derive(Debug)]
 pub struct File {
@@ -23,6 +23,7 @@ pub fn get_file_as_byte_vec(path: &PathBuf) -> Vec<u8> {
 pub async fn get_file_from_github(file: &File) {
     let client = reqwest::Client::new();
     match client.get(file.url.as_str())
+            .header(USER_AGENT, "nsrcodes")
             .header(ACCEPT, "application/vnd.github.v3.raw")
             .send()
             .await {

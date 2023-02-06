@@ -12,7 +12,7 @@ pub struct ResponseObject {
     pub path: String,
     pub sha: String,
     pub url: String,
-    pub download_url: String,
+    pub download_url: Option<String>,
     pub r#type: String,
     pub size: u32
 }
@@ -20,6 +20,8 @@ pub struct ResponseObject {
 /* todo: add tests for utilities */ 
 pub async fn get_from_github_api(valid_url: &Url) -> Vec<ResponseObject>{
     let client = reqwest::Client::new();
+    println!("url, {:#?}", valid_url.as_str());
+
     client.get(valid_url.as_str()) // hacky but works for now
         .header(USER_AGENT, "nsrcodes")
         .send()
