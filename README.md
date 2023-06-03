@@ -1,7 +1,7 @@
 # ssgithub
 A backend project to get hands dirty with async rust programming inspired from downgit
 
-## Note: The hosted service is currently down 😪, till I find a hosting provider that meets my needs, till, then feel free to build the docker image and host yourself. 
+## Note: The hosted service is currently down 😪, till I find a hosting provider that meets my needs. Untill then, feel free to build the docker image and host yourself. 
 
 The next time you need to download a subdirectory of any github repository, navigate to that directory on your browser, and change the domain of the url from `github.com` to `ssgithub.com` (_Just add `ss` to the start_)
 
